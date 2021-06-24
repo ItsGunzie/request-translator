@@ -3,6 +3,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const axios = require('axios')
 let incident_id;
+let page_id;
 
 // Initialize express and define a port
 const app = express()
@@ -33,9 +34,9 @@ app.post("/hook", (req, res) => {
     console.log("OUTGOING MESSAGE--------------")
     console.log(tempJason)
 
-    axios.post('https://api.statuspage.io/v1/pages/5bhglqd14x7q/incidents', tempJason, {
+    axios.post('https://api.statuspage.io/v1/pages/<ID>/incidents', tempJason, {
       headers: {
-        'Authorization': '172a3eb5-1e9a-4222-a46e-f1886bb63e3c'
+        'Authorization': //auth_code
       }
     })
     .then((res) => {
@@ -49,9 +50,9 @@ app.post("/hook", (req, res) => {
         console.error(err);
     });
 
-    axios.put(`https://api.statuspage.io/v1/pages/5bhglqd14x7q/components/${component_id}`, tempJason2, {
+    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/components/${component_id}`, tempJason2, {
       headers: {
-        'Authorization': '172a3eb5-1e9a-4222-a46e-f1886bb63e3c'
+        'Authorization': //auth_code
       }
     })
     .then((res) => {
@@ -71,9 +72,9 @@ app.post("/hook", (req, res) => {
     tempJason.incident.component_ids[0] = component_id
     tempJason2.component.status = 'operational'
     console.log(tempJason)
-    axios.put(`https://api.statuspage.io/v1/pages/5bhglqd14x7q/incidents/${incident_id}`, tempJason, {
+    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/incidents/${incident_id}`, tempJason, {
       headers: {
-        'Authorization': '172a3eb5-1e9a-4222-a46e-f1886bb63e3c'
+        'Authorization': //auth_code
       }
     })
     .then((res) => {
@@ -84,9 +85,9 @@ app.post("/hook", (req, res) => {
         console.error(err);
     });
 
-    axios.put(`https://api.statuspage.io/v1/pages/5bhglqd14x7q/components/${component_id}`, tempJason2, {
+    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/components/${component_id}`, tempJason2, {
       headers: {
-        'Authorization': '172a3eb5-1e9a-4222-a46e-f1886bb63e3c'
+        'Authorization': //auth_code
       }
     })
     .then((res) => {
