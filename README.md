@@ -1,0 +1,3 @@
+This is an api for saving data to local sqlite files. A lot of it is hard-coded so if you wish to use for your own sqlite files you will need to adjust queries in `database.js` to match your data and needs, and honestly you will probably be best off creating your own querying methods in this file and calling them in `server.js`. I may update this repo at some point to have more functionality and more easily configurable.
+
+The server runs on port 3030 by default but you can set it to any port you wish in `server.js` by changing the `port` variable.
