@@ -2,8 +2,6 @@
 const express = require("express")
 const bodyParser = require("body-parser")
 const axios = require('axios')
-let incident_id;
-let page_id;
 
 // Initialize express and define a port
 const app = express()
@@ -15,26 +13,29 @@ app.use(bodyParser.json())
 // Start express on the defined port
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`))
 
+let incident_id;
+let page_id;
+
 app.post("/hook", (req, res) => {
   console.log("INCOMING HOOK-------------")
   console.log(req.body)
   let instance = req.body.groupLabels.instance
   let status = req.body.status
   let component_id = req.body.commonLabels.id
-  let tempJason = incidentTemplate
-  let tempJason2 = componentTemplate
+  let tempIncident = incidentTemplate
+  let tempComponent = componentTemplate
 
   if (status === 'firing') {
-    tempJason.incident.name = "OUTAGE-AT-" + instance
-    tempJason.incident.status = 'investigating'
-    tempJason.incident.impact_override = 'major'
-    tempJason.incident.components.component_id = 'major_outage'
-    tempJason.incident.component_ids = component_id
-    tempJason2.component.status = 'major_outage'
+    tempIncident.incident.name = "OUTAGE-AT-" + instance
+    tempIncident.incident.status = 'investigating'
+    tempIncident.incident.impact_override = 'major'
+    tempIncident.incident.components.component_id = 'major_outage'
+    tempIncident.incident.component_ids = component_id
+    tempComponent.component.status = 'major_outage'
     console.log("OUTGOING MESSAGE--------------")
-    console.log(tempJason)
+    console.log(tempIncident)
 
-    axios.post('https://api.statuspage.io/v1/pages/<ID>/incidents', tempJason, {
+    axios.post('https://api.statuspage.io/v1/pages/<ID>/incidents', tempIncident, {
       headers: {
         'Authorization': //auth_code
       }
@@ -50,7 +51,7 @@ app.post("/hook", (req, res) => {
         console.error(err);
     });
 
-    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/components/${component_id}`, tempJason2, {
+    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/components/${component_id}`, tempComponent, {
       headers: {
         'Authorization': //auth_code
       }
@@ -65,14 +66,14 @@ app.post("/hook", (req, res) => {
     });
 
   } else if (status === 'resolved') {
-    tempJason.incident.name = "OUTAGE-AT-" + instance
-    tempJason.incident.status = 'resolved'
-    tempJason.incident.impact_override = 'none'
-    tempJason.incident.components.component_id = 'operational'
-    tempJason.incident.component_ids[0] = component_id
-    tempJason2.component.status = 'operational'
-    console.log(tempJason)
-    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/incidents/${incident_id}`, tempJason, {
+    tempIncident.incident.name = "OUTAGE-AT-" + instance
+    tempIncident.incident.status = 'resolved'
+    tempIncident.incident.impact_override = 'none'
+    tempIncident.incident.components.component_id = 'operational'
+    tempIncident.incident.component_ids[0] = component_id
+    tempComponent.component.status = 'operational'
+    console.log(tempIncident)
+    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/incidents/${incident_id}`, tempIncident, {
       headers: {
         'Authorization': //auth_code
       }
@@ -85,7 +86,7 @@ app.post("/hook", (req, res) => {
         console.error(err);
     });
 
-    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/components/${component_id}`, tempJason2, {
+    axios.put(`https://api.statuspage.io/v1/pages/${page_id}/components/${component_id}`, tempComponent, {
       headers: {
         'Authorization': //auth_code
       }
